@@ -327,6 +327,7 @@ function CountdownPage(props) {
   return (
     <div>
       <span
+          id="countdown"
           onClick={handleClickBack}
           style={{
             color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`,
