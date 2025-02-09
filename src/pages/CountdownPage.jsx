@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { withRouter, useLocation, useHistory } from "react-router-dom";
 import io from "socket.io-client"
 import { Chat, ChatEvents } from 'twitch-js'
@@ -18,6 +18,7 @@ function CountdownPage(props) {
   const [socket, setSocket] = useState();
   const [startTime, setStartTime] = useState(targetDate);
   const color = location.state.Color;
+  const countdownRef = useRef(null);
 
   // implement queue to synchronously do async tasks
   const [queue, setQueue] = useState({isProcessing: false, tasks: []})
@@ -104,6 +105,25 @@ function CountdownPage(props) {
         handleSubs(subPlan, numGifts);
       }
     });
+    twitchChat.on('PRIVMSG', (message) => {
+      // console.log(`${message.tags.badges.moderator} -> ${message.username}: ${message.message}`);
+      if (message.tags.badges.moderator || message.tags.badges.broadcaster) {
+        const messageTokens = message.message.split(' ');
+        if (messageTokens[0] === '!addtime') {
+          const timeToAdd = parseInt(messageTokens[1]);
+          setQueue(
+            (prev) => ({
+              isProcessing: prev.isProcessing,
+              tasks: prev.tasks.concat([timeToAdd]),
+            })
+          )
+        } else if (messageTokens[0] === '!pause') {
+          countdownRef.current.pause();
+        } else if (messageTokens[0] === '!resume') {
+          countdownRef.current.start();
+        }
+      }
+    })
   
     await twitchChat.connect();
     await twitchChat.join(channel);
@@ -316,6 +336,7 @@ function CountdownPage(props) {
             date = {targetDate}
             renderer = {renderer}
             onComplete = {onComplete}
+            ref = {countdownRef}
           />
       </span>
       {/* <button
