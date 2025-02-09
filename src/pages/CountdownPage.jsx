@@ -17,6 +17,7 @@ function CountdownPage(props) {
   const [targetDate, setTargetDate] = useState(Date.now() + defaultAdditionalTime * 1000 );
   const [socket, setSocket] = useState();
   const [startTime, setStartTime] = useState(targetDate);
+  const [lastSocketMessage, setLastSocketMessage] = useState(null);
   const color = location.state.Color;
   const countdownRef = useRef(null);
 
@@ -130,10 +131,11 @@ function CountdownPage(props) {
   };
 
 
-  const socketStreamlabs = io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ["websocket"],})
-  const socketStreamElements = io(`https://realtime.streamelements.com`, { transports: ["websocket"] })
+  let socketStreamlabs;
+  let socketStreamElements;
 
   const runSocketStreamlabs = async () => {
+    socketStreamlabs = io(`https://sockets.streamlabs.com?token=${location.state.Token}`, {transports: ["websocket"],});
     socketStreamlabs.on("connect", () => {
       //console.log("connected with streamlabs");
       //console.log(socketStreamlabs.connected); // true
@@ -155,6 +157,7 @@ function CountdownPage(props) {
   }
   
   const runSocketStreamelements = async () => {
+    socketStreamElements = io(`https://realtime.streamelements.com`, { transports: ["websocket"] });
     //streamelements
     socketStreamElements.on("connect", () => {
       //console.log("Successfully connected to streamelements websocket");
@@ -255,9 +258,9 @@ function CountdownPage(props) {
           tasks: prev.tasks.concat([location.state.FollowTime]),
         })
       )
-    } else if (data.listener == "tip-latest") {
-      let amount = data.event.amount;
-      //console.log("Dono streamlabs received: $", amount);
+    } else if (data.listener == "tip-latest" || data.type === 'tip') {
+      let amount = data.data.amount;
+      //console.log("Dono streamelements received: $", amount);
       setQueue(
         (prev) => ({
           isProcessing: prev.isProcessing,
