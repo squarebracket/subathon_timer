@@ -68,6 +68,15 @@ function CountdownPage(props) {
   });
 
   const runTwitchChat = async () => {
+    twitchChat.on('DISCONNECTED', () => {
+      document.location = document.location;
+    });
+    twitchChat.on('RECONNECT', () => {
+      document.location = document.location;
+    });
+    twitchChat.on('ERROR_ENCOUNTERED', () => {
+      document.location = document.location;
+    });
     twitchChat.on("SUBSCRIPTION", (message) => {
       if (message != lastSub) {
         const subPlan = message.parameters.subPlan || "";
