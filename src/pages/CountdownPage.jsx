@@ -113,7 +113,9 @@ function CountdownPage(props) {
         const subPlan = message.parameters.subPlan || ""
         //console.log("ADD: SUBSCRIPTION_GIFT",numGifts, subPlan, msg);
         setLastSubGift(message);
-        handleSubs(subPlan, months);
+        if (months === 1) {
+          handleSubs(subPlan, months);
+        }
       }
     });
     twitchChat.on("SUBSCRIPTION_GIFT_COMMUNITY", (message) => {
