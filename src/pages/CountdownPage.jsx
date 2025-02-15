@@ -106,18 +106,18 @@ function CountdownPage(props) {
         handleBits(bits);
       }
     });
-    twitchChat.on("SUBSCRIPTION_GIFT", (message) => {
-      if (message != lastSubGift) {
-        const msg = message.systemMessage || "";
-        const months = message.parameters.months
-        const subPlan = message.parameters.subPlan || ""
-        //console.log("ADD: SUBSCRIPTION_GIFT",numGifts, subPlan, msg);
-        setLastSubGift(message);
-        if (months === 1) {
-          handleSubs(subPlan, months);
-        }
-      }
-    });
+    // twitchChat.on("SUBSCRIPTION_GIFT", (message) => {
+    //   if (message != lastSubGift) {
+    //     const msg = message.systemMessage || "";
+    //     const months = message.parameters.months
+    //     const subPlan = message.parameters.subPlan || ""
+    //     //console.log("ADD: SUBSCRIPTION_GIFT",numGifts, subPlan, msg);
+    //     setLastSubGift(message);
+    //     if (months === 1) {
+    //       handleSubs(subPlan, months);
+    //     }
+    //   }
+    // });
     twitchChat.on("SUBSCRIPTION_GIFT_COMMUNITY", (message) => {
       if (message != lastSubGiftCommunity) {
         const msg = message.systemMessage || "";
