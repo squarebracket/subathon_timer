@@ -18,6 +18,7 @@ function CountdownPage(props) {
   const [socket, setSocket] = useState();
   const [startTime, setStartTime] = useState(targetDate);
   const [lastSocketMessage, setLastSocketMessage] = useState(null);
+  const [pausedStart, setPausedStart] = useState(Date.now());
   const color = location.state.Color;
   const countdownRef = useRef(null);
 
@@ -40,7 +41,12 @@ function CountdownPage(props) {
     .then((val) => {
       //console.log("before:", targetDate);
       //console.log("time to add:", val);
-      setTargetDate(targetDate + val*1000);
+      let timePaused = 0;
+      if (countdownRef.current.isPaused()) {
+        timePaused = Date.now() - pausedStart;
+        setPausedStart(Date.now());
+      }
+      setTargetDate(targetDate + timePaused + val*1000);
       setTotalAdd(totalAdd + val);
     })
     .finally(() => {
@@ -363,6 +369,17 @@ function CountdownPage(props) {
             renderer = {renderer}
             onComplete = {onComplete}
             ref = {countdownRef}
+            onPause={(timeDelta) => {
+              setPausedStart(Date.now());
+            }}
+            onStart={(timeDelta) => {
+              setQueue(
+                (prev) => ({
+                  isProcessing: prev.isProcessing,
+                  tasks: prev.tasks.concat([(Date.now() - pausedStart)/1000]),
+                })
+              )
+            }}
           />
       </span>
       {/* <button
