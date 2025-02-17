@@ -364,13 +364,14 @@ function CountdownPage(props) {
           }}
         >
           <Countdown
-            autoStart = {true}
+            autoStart = {localStorage.getItem('autostart') !== 'false'}
             date = {targetDate}
             renderer = {renderer}
             onComplete = {onComplete}
             ref = {countdownRef}
             onPause={(timeDelta) => {
               setPausedStart(Date.now());
+              localStorage.setItem('autostart', false);
             }}
             onStart={(timeDelta) => {
               setQueue(
@@ -379,6 +380,7 @@ function CountdownPage(props) {
                   tasks: prev.tasks.concat([(Date.now() - pausedStart)/1000]),
                 })
               )
+              localStorage.setItem('autostart', true);
             }}
           />
       </span>
