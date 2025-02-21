@@ -342,11 +342,11 @@ function CountdownPage(props) {
   const disconnectAllServices = () => {
     twitchChat.disconnect();
     //console.log("chat disconneted from:", channel);
-    if (socketStreamElements.connected) {
+    if (socketStreamElements && socketStreamElements.connected) {
       //console.log("streamelements socket disconneted");
       socketStreamElements.disconnect();
     }
-    if (socketStreamlabs.connected) {
+    if (socketStreamlabs && socketStreamlabs.connected) {
       //console.log("streamelements socket disconneted");
       socketStreamlabs.disconnect();
     }
