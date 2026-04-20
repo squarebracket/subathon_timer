@@ -136,7 +136,7 @@ function CountdownPage(props) {
     });
     twitchChat.on('PRIVMSG', (message) => {
       // console.log(`${message.tags.badges.moderator} -> ${message.username}: ${message.message}`);
-      if (message.tags.badges.moderator || message.tags.badges.broadcaster) {
+      if (message.tags.badges.leadModerator || message.tags.badges.moderator || message.tags.badges.broadcaster) {
         const messageTokens = message.message.split(' ');
         if (messageTokens[0] === '!addtime') {
           const timeToAdd = parseInt(messageTokens[1]);
